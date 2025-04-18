@@ -1,0 +1,36 @@
+# Node
+node_modules/
+*.log
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+/dist/
+/build/
+
+# Test
+coverage/
+test-results/
+
+# Data
+/data/
+
+# Debug
+src/debug/
+debug-latest.html
+
+# Env
+.env
+
+# Others
+*.png
+*.jpg
+*.jpeg
+*.gif
+crowdworks_jobs.html
+crowdworks_jobs.png
