@@ -29,8 +29,11 @@ async function main() {
       page++;
     }
     logger.info(`Total jobs extracted: ${allJobs.length}`);
-    const savedPath = saveDataAsJson(allJobs);
-    logger.info(`Saved scraped data to: ${savedPath}`);
+    const savedPathJson = saveDataAsJson(allJobs);
+    logger.info(`Saved scraped data to: ${savedPathJson}`);
+    // CSVでも保存
+    const savedPathCsv = require('./utils/dataSaver').saveDataAsCsv(allJobs);
+    logger.info(`Saved scraped data to: ${savedPathCsv}`);
   } catch (e) {
     logger.error(`Fatal error: ${e}`);
   } finally {
