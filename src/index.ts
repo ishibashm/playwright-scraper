@@ -82,6 +82,18 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
   // Use args array for keyword parsing as well
   const keywordArg = args.find(arg => arg.startsWith('--keyword='));
   const keyword = keywordArg ? keywordArg.split('=')[1].replace(/"/g, '') : config.defaultSearchKeyword;
+  const startPageArg = args.find(arg => arg.startsWith('--start-page='));
+  let startPageNum = 1; // Default start page
+  if (startPageArg) {
+      const pageStr = startPageArg.split('=')[1];
+      const pageNumParsed = parseInt(pageStr, 10);
+      if (!isNaN(pageNumParsed) && pageNumParsed > 0) {
+          startPageNum = pageNumParsed;
+          logger.info(`Starting list scraping from page: ${startPageNum}`);
+      } else {
+          logger.warn(`Invalid value for --start-page: "${pageStr}". Starting from page 1.`);
+      }
+  }
   // --- End Argument Parsing ---
 
   let allJobsData: JobItem[] = []; // This will hold the final data
@@ -130,7 +142,7 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
       // --- Normal Mode: Scrape from scratch ---
       logger.info('--- Starting Phase 1: Scraping Job Summaries ---');
       logger.info(`Using search keyword: ${keyword}`);
-      let pageNum = 1;
+      let pageNum = startPageNum; // Use startPageNum here
       let hasMorePages = true;
 
       while (hasMorePages && pageNum <= config.maxPages) {
