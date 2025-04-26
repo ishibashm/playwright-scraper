@@ -6,4 +6,16 @@ export interface JobItem {
   client: string;
   applicants: number;
   link: string;
+  // Detailed information
+  detailDescription?: string;
+  applicantsCount?: number;
+  contractedCount?: number;
+  requiredCount?: number;
+  applicationDeadline?: string;
+  clientName?: string;
+  clientRating?: number;
+  clientReviewCount?: number;
+  clientIdentityVerified?: boolean;
+  clientRuleCheckSucceeded?: boolean;
+  error?: string; // Optional error property added
 }

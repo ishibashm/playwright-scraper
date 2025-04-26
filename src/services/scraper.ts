@@ -6,7 +6,12 @@ import withRetry from '../utils/retry';
 
 export class Scraper {
   private browser: Browser | null = null;
-  private page: Page | null = null;
+  public page: Page | null = null; // Make page public or add a getter
+
+  // Optional: Add a getter if you prefer to keep the property private
+  // public get currentPage(): Page | null {
+  //   return this.page;
+  // }
 
   async init(): Promise<void> {
     try {
@@ -30,13 +35,13 @@ export class Scraper {
       async () => {
         await this.page!.goto(url, { 
           waitUntil: 'domcontentloaded',
-          timeout: 30000 
+          timeout: 30000
         });
-        // Wait for the job list to be visible
-        await this.page!.waitForSelector('div.UNzN7', { 
-          state: 'visible',
-          timeout: 10000 
-        });
+        // Remove the list-page specific wait from here
+        // await this.page!.waitForSelector('div.UNzN7', {
+        //   state: 'visible',
+        //   timeout: 10000
+        // });
         logger.info(`Navigated to ${url}`);
       },
       { operationName: 'Page navigation', maxRetries: 3, delayMs: 2000 }
