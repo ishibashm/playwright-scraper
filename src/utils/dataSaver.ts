@@ -1,16 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import { config } from '../config/config';
+// config のインポートパスを修正 (相対パスを一段上に)
+import { config } from '../config';
 import { formatDate } from './dateFormatter';
 import logger from './logger';
 
-export function saveDataAsJson(data: any) {
+// suffix 引数を追加 (デフォルトは空文字)
+export function saveDataAsJson(data: any, suffix: string = '') {
   try {
     if (!fs.existsSync(config.dataDir)) {
       fs.mkdirSync(config.dataDir, { recursive: true });
     }
     const timestamp = formatDate(new Date());
-    const filePath = path.join(config.dataDir, `scraped-${timestamp}.json`);
+    // ファイル名に suffix を含める
+    const filePath = path.join(config.dataDir, `scraped-${timestamp}${suffix}.json`);
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
     logger.info(`Data saved to ${filePath}`);
     return filePath;
@@ -20,13 +23,15 @@ export function saveDataAsJson(data: any) {
   }
 }
 
-export function saveDataAsCsv(data: any[]) {
+// suffix 引数を追加 (デフォルトは空文字)
+export function saveDataAsCsv(data: any[], suffix: string = '') {
   try {
     if (!fs.existsSync(config.dataDir)) {
       fs.mkdirSync(config.dataDir, { recursive: true });
     }
     const timestamp = formatDate(new Date());
-    const filePath = path.join(config.dataDir, `scraped-${timestamp}.csv`);
+    // ファイル名に suffix を含める
+    const filePath = path.join(config.dataDir, `scraped-${timestamp}${suffix}.csv`);
     if (!Array.isArray(data) || data.length === 0) {
       fs.writeFileSync(filePath, '', 'utf-8');
       logger.info(`CSV file created (empty): ${filePath}`);

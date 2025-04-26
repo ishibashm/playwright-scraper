@@ -17,8 +17,10 @@
     "scrape": "ts-node src/index.ts"
   },
   "dependencies": {
+    "@types/papaparse": "^5.3.15",
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
+    "papaparse": "^5.5.2",
     "playwright": "^1.52.0",
     "winston": "^3.17.0"
   },

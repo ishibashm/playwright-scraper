@@ -8,4 +8,5 @@ export const config = {
   maxPages: 5, // Define how many pages to scrape
   chunkSize: 5, // Number of jobs to process before logging progress
   timeout: 30000, // Timeout for page navigation
+  dataDir: 'data', // Directory to save scraped data
 } as const;

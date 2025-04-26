@@ -62,8 +62,16 @@ export async function scrapeJobDetails(page: Page): Promise<Partial<JobItem>> {
     }
 
     // 8. クライアントレビュー数
-    const reviewText = await getTextContent(page, 'section.client_detail_information .client_rating span.feedback_summary');
-    details.clientReviewCount = extractNumber(reviewText) ?? undefined;
+    // 8. クライアントレビュー数
+    const reviewSelector = 'section.client_detail_information .client_rating span.feedback_summary'; // Define selector
+    if (await elementExists(page, reviewSelector)) { // Check if element exists first
+      const reviewText = await getTextContent(page, reviewSelector);
+      details.clientReviewCount = extractNumber(reviewText) ?? undefined;
+    } else {
+      // Optionally log or set a default value like 0 if the element doesn't exist
+      logger.debug(`Review count element (${reviewSelector}) not found on this page.`); // Use debug level
+      details.clientReviewCount = undefined; // Explicitly set to undefined (or 0)
+    }
 
     // 9. 本人確認状況 (未提出なら true)
     details.clientIdentityVerified = !(await elementExists(page, 'section.client_detail_information span.not-identity_verified'));
