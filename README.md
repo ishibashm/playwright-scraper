@@ -6,7 +6,9 @@ This project is a web scraper built using Playwright, designed to extract job li
 ## Features
 - Scrapes job listings from the target website.
 - Handles pagination to navigate through multiple pages of job listings.
-- Configurable settings for easy adjustments to the target URL and selectors.
+- **Allows specifying search keywords via command-line arguments.**
+- **Processes jobs in chunks and prompts the user to continue after each chunk.**
+- Configurable settings for easy adjustments (target URL base, default keyword, selectors, chunk size, etc.).
 
 ## Project Structure
 ```
@@ -54,10 +56,28 @@ playwright-scraper
    ```
 
 ## Usage
-To run the scraper, execute the following command:
-```
-npm run scrape
-```
+
+1.  **Build the project:**
+    Compile the TypeScript code into JavaScript:
+    ```bash
+    npm run build
+    ```
+
+2.  **Run the scraper:**
+    Execute the compiled code using Node.js.
+
+    *   **Using the default search keyword (defined in `src/config.ts`):**
+        ```bash
+        node dist/index.js
+        ```
+
+    *   **Specifying a search keyword:**
+        Use the `--keyword` argument. Replace `"Your Keyword"` with the desired search term.
+        ```bash
+        node dist/index.js --keyword="Your Keyword"
+        ```
+
+    The scraper will process jobs in chunks (size defined in `src/config.ts`). After each chunk, it will ask `Continue to next chunk? (y/n):`. Enter `y` to continue or `n` to stop and save the data collected so far.
 
 ## Running Tests
 To ensure the scraper functions correctly, run the tests using:
@@ -66,7 +86,13 @@ npm test
 ```
 
 ## Configuration
-Adjust the settings in `src/config.ts` to modify the target URL and selectors used for scraping.
+Adjust the settings in `src/config.ts`:
+- `targetUrl`: The base URL for the job search (without keywords or page numbers).
+- `defaultSearchKeyword`: The keyword used when no `--keyword` argument is provided.
+- `jobListingSelector`, `nextPageSelector`: CSS selectors for scraping (may need adjustment based on website structure).
+- `maxPages`: The maximum number of pages to scrape.
+- `chunkSize`: The number of jobs to process before pausing and asking the user to continue.
+- `timeout`: Timeout for page navigation in milliseconds.
 
 ## Contributing
 Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.

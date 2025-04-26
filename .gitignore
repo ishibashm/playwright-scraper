@@ -34,3 +34,8 @@ debug-latest.html
 *.gif
 crowdworks_jobs.html
 crowdworks_jobs.png
+
+# Python venv
+venv/
+
+PLAN.md
