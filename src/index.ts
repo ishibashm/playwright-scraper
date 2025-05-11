@@ -94,6 +94,7 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
           logger.warn(`Invalid value for --start-page: "${pageStr}". Starting from page 1.`);
       }
   }
+  const skipChunkConfirm = args.includes('--skip-chunk-confirm');
   // --- End Argument Parsing ---
 
   let allJobsData: JobItem[] = []; // This will hold the final data
@@ -256,11 +257,13 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
                logger.info(`Max job limit (${maxJobsLimit}) reached during chunk confirmation.`);
                break;
            }
-           const continueChunk = await askQuestion('Continue fetching details for the next chunk? (y/n): ');
-           if (continueChunk.toLowerCase() !== 'y') {
-             logger.info('Stopping detail scraping process based on user input.');
-             stopDetailScraping = true;
-           }
+           if (!skipChunkConfirm) {
+             const continueChunk = await askQuestion('Continue fetching details for the next chunk? (y/n): ');
+             if (continueChunk.toLowerCase() !== 'y') {
+               logger.info('Stopping detail scraping process based on user input.');
+               stopDetailScraping = true;
+             }
+           } // skipChunkConfirmがtrueなら何も聞かずに進む
          }
         // --- End Chunk Confirmation ---
       }
