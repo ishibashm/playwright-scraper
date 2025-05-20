@@ -6,6 +6,7 @@ import Papa from 'papaparse'; // Import papaparse
 import { Scraper } from './services/scraper';
 import { scrapeJobDetails } from './services/detailScraper';
 import { saveDataAsJson, saveDataAsCsv } from './utils/dataSaver';
+import { uploadFileToDrive } from './utils/googleDriveUploader'; // ★ 追加
 import { JobItem } from './types/types';
 import { config } from './config';
 import logger from './utils/logger';
@@ -65,8 +66,12 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
   // --- Argument Parsing ---
   const args = process.argv.slice(2); // Get only script arguments
   const inputFileArg = args.find(arg => arg.startsWith('--input-file='));
-  const inputFilePath = inputFileArg ? inputFileArg.split('=')[1] : null;
-  logger.info(`Parsed input file path: ${inputFilePath}`); // Add log for debugging
+  let inputFilePath = inputFileArg ? inputFileArg.split('=')[1] : null;
+  if (inputFilePath) {
+    // Remove surrounding quotes if present (from batch file or user input)
+    inputFilePath = inputFilePath.replace(/^"|"$/g, '');
+  }
+  logger.info(`Processed input file path: ${inputFilePath}`); // Add log for debugging
   const maxJobsArg = args.find(arg => arg.startsWith('--max-jobs='));
   let maxJobsLimit: number | null = null;
   if (maxJobsArg) {
@@ -95,6 +100,8 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
       }
   }
   const skipChunkConfirm = args.includes('--skip-chunk-confirm');
+  const forceFetchDetails = args.includes('--fetch-details'); // ★ 追加
+  const forceNoFetchDetails = args.includes('--no-fetch-details'); // ★ 追加
   // --- End Argument Parsing ---
 
   let allJobsData: JobItem[] = []; // This will hold the final data
@@ -203,15 +210,23 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
     } // End of Mode Branching
 
     // --- Phase 2: User Confirmation and Detail Scraping ---
-    let fetchDetailsAnswer = 'n'; // Default to no if no details need processing
-    if (jobsToProcessDetails.length > 0) {
-        fetchDetailsAnswer = await askQuestion(`Found ${jobsToProcessDetails.length} jobs requiring details. Fetch details now? (y/n): `);
-    } else if (!isResumeMode) {
-        logger.info('No job summaries collected in Phase 1.');
+    let fetchDetailsDecision = 'n'; // Default to no
+    if (forceFetchDetails) {
+      fetchDetailsDecision = 'y';
+      logger.info('Detail scraping will be performed due to --fetch-details flag.');
+    } else if (forceNoFetchDetails) {
+      fetchDetailsDecision = 'n';
+      logger.info('Detail scraping will be skipped due to --no-fetch-details flag.');
+    } else {
+      // No force flags, ask the user if there are jobs to process
+      if (jobsToProcessDetails.length > 0) {
+          fetchDetailsDecision = await askQuestion(`Found ${jobsToProcessDetails.length} jobs requiring details. Fetch details now? (y/n): `);
+      } else if (!isResumeMode) {
+          logger.info('No job summaries collected in Phase 1, skipping detail fetch question.');
+      }
     }
 
-
-    if (fetchDetailsAnswer.toLowerCase() === 'y' && jobsToProcessDetails.length > 0) {
+    if (fetchDetailsDecision.toLowerCase() === 'y' && jobsToProcessDetails.length > 0) {
       logger.info('--- Starting Phase 2: Scraping Job Details ---');
       let processedDetailCount = 0;
       let actualProcessedIndex = 0; // Index within jobsToProcessDetails
@@ -284,6 +299,23 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
         logger.info(`Saved scraped data to: ${savedPathJson}`);
         const savedPathCsv = saveDataAsCsv(finalDataToSave, outputSuffix); // Pass suffix to saver
         logger.info(`Saved scraped data to: ${savedPathCsv}`);
+
+        // --- Google Driveへのアップロード処理 --- ★ 追加ブロックここから
+        if (savedPathCsv) {
+          const googleDriveFolderId = '1CAA4Hq_wh2fGQkFzoUOxrD8VPjmCbYH4'; // ★ ユーザー指定のフォルダID
+          try {
+            logger.info(`Attempting to upload ${savedPathCsv} to Google Drive...`);
+            const fileId = await uploadFileToDrive(savedPathCsv, googleDriveFolderId);
+            if (fileId) {
+              logger.info(`Successfully uploaded to Google Drive. File ID: ${fileId}`);
+            } else {
+              logger.warn('Upload to Google Drive may have failed (no file ID returned).');
+            }
+          } catch (uploadError) {
+            logger.error(`Failed to upload ${savedPathCsv} to Google Drive: ${uploadError}`);
+          }
+        }
+        // --- Google Driveへのアップロード処理 --- ★ 追加ブロックここまで
     } else {
         logger.info('No data to save.');
     }
