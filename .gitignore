@@ -1,3 +1,5 @@
+%TEMP%/vscode-user-data/
+
 # Node
 node_modules/
 *.log

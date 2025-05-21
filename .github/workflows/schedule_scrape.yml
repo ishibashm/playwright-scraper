@@ -41,11 +41,17 @@ jobs:
           echo "$GOOGLE_DRIVE_CREDENTIALS_JSON" > google-drive-credentials.json
           echo "google-drive-credentials.json created."
 
+      - name: Set Google Cloud Storage bucket name
+        env:
+          GOOGLE_CLOUD_STORAGE_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_STORAGE_BUCKET_NAME }}
+        run: echo "GOOGLE_CLOUD_STORAGE_BUCKET_NAME=${GOOGLE_CLOUD_STORAGE_BUCKET_NAME}"
+
       - name: Run scraper script
         # バッチファイルはインタラクティブな入力を求めるため、Actionsでは直接コマンドを実行
         # 必要に応じて引数を追加してください (例: --keyword="your keyword" --max-jobs=50)
         env:
           GITHUB_ACTIONS: true
+          GOOGLE_CLOUD_STORAGE_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_STORAGE_BUCKET_NAME }}
         run: npm run scrape --skip-chunk-confirm
 
       # オプション: 生成されたCSVファイルをアーティファクトとして保存
