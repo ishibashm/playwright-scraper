@@ -29,8 +29,6 @@ jobs:
       - name: Install @googleapis/drive
         run: npm install --save-dev @googleapis/drive
 
-      - name: Install @types/googleapis
-        run: npm install --save-dev @types/googleapis
 
       - name: Install Playwright browsers
         run: npx playwright install
