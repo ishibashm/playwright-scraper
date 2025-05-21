@@ -99,8 +99,8 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
           logger.warn(`Invalid value for --start-page: "${pageStr}". Starting from page 1.`);
       }
   }
-  const skipChunkConfirm = args.includes('--skip-chunk-confirm');
-  const forceFetchDetails = args.includes('--fetch-details'); // ★ 追加
+  const skipChunkConfirm = process.env.GITHUB_ACTIONS === 'true' ? true : args.includes('--skip-chunk-confirm');
+  const forceFetchDetails = process.env.GITHUB_ACTIONS === 'true' ? true : args.includes('--fetch-details');
   const forceNoFetchDetails = args.includes('--no-fetch-details'); // ★ 追加
   // --- End Argument Parsing ---
 

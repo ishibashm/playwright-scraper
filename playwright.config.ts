@@ -7,7 +7,7 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     ignoreHTTPSErrors: true,
     navigationTimeout: 30000,
-    actionTimeout: 15000,
+    actionTimeout: 30000,
   },
   retries: 2, // Retry failed tests up to 2 times
   projects: [

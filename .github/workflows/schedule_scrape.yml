@@ -37,7 +37,9 @@ jobs:
       - name: Run scraper script
         # バッチファイルはインタラクティブな入力を求めるため、Actionsでは直接コマンドを実行
         # 必要に応じて引数を追加してください (例: --keyword="your keyword" --max-jobs=50)
-        run: npm run scrape --skip-chunk-confirm
+        env:
+          GITHUB_ACTIONS: true
+        run: npm run scrape --skip-chunk-confirm --fetch-details
 
       # オプション: 生成されたCSVファイルをアーティファクトとして保存
       # dataディレクトリ内の最新のCSVファイルを特定するロジックが必要になる場合があります。
