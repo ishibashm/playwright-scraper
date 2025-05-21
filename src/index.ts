@@ -100,7 +100,7 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
       }
   }
   const skipChunkConfirm = process.env.GITHUB_ACTIONS === 'true' ? true : args.includes('--skip-chunk-confirm');
-  const forceFetchDetails = process.env.GITHUB_ACTIONS === 'true' ? true : args.includes('--fetch-details');
+  const forceFetchDetails = process.env.GITHUB_ACTIONS === 'true' ? false : args.includes('--fetch-details');
   const forceNoFetchDetails = args.includes('--no-fetch-details'); // ★ 追加
   // --- End Argument Parsing ---
 

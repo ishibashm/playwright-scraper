@@ -4,7 +4,7 @@ import { google } from 'googleapis';
 import logger from './logger';
 
 // サービスアカウントキーのパス (プロジェクトルートからの相対パス)
-const KEY_FILE_PATH = path.join(__dirname, '..', '..', 'google-drive-credentials.json');
+const KEY_FILE_PATH = 'google-drive-credentials.json';
 // Google Drive APIのスコープ
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
 

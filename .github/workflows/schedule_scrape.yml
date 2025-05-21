@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install @types/googleapis
+        run: npm install --save-dev @types/googleapis
+
       - name: Install Playwright browsers
         run: npx playwright install
 
@@ -39,7 +42,7 @@ jobs:
         # 必要に応じて引数を追加してください (例: --keyword="your keyword" --max-jobs=50)
         env:
           GITHUB_ACTIONS: true
-        run: npm run scrape --skip-chunk-confirm --fetch-details
+        run: npm run scrape --skip-chunk-confirm
 
       # オプション: 生成されたCSVファイルをアーティファクトとして保存
       # dataディレクトリ内の最新のCSVファイルを特定するロジックが必要になる場合があります。
