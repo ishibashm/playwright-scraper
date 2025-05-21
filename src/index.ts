@@ -56,10 +56,17 @@ function parseCsvData(csvData: string): JobItem[] {
 
 async function main() {
   const scraper = new Scraper();
-  const rl = readline.createInterface({ input, output });
+  let rl: readline.Interface | null = null;
 
   const askQuestion = (query: string): Promise<string> => {
-    return new Promise(resolve => rl.question(query, resolve));
+    if (!process.stdin.isTTY) {
+      console.warn('Not running in a TTY environment. Skipping interactive question.');
+      return Promise.resolve(''); // Resolve with an empty string or a default value
+    }
+    rl = readline.createInterface({ input, output });
+    return new Promise<string>(resolve => rl.question(query, resolve)).finally(() => {
+      rl?.close();
+    });
   };
 
 console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
