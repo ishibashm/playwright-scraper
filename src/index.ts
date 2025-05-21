@@ -65,7 +65,7 @@ async function main() {
     }
     rl = readline.createInterface({ input, output });
     return new Promise<string>(resolve => rl.question(query, resolve)).finally(() => {
-      rl && rl.close();
+      rl?.close();
     });
   };
 
