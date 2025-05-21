@@ -18,10 +18,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # プロジェクトで使用しているNode.jsのバージョンに合わせてください
+          node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install @types/node
+        run: npm install --save-dev @types/node
+
+      - name: Install googleapis
+        run: npm install --save-dev googleapis
+
+      - name: Install @googleapis/drive
+        run: npm install --save-dev @googleapis/drive
 
       - name: Install @types/googleapis
         run: npm install --save-dev @types/googleapis

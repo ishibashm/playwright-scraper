@@ -22,12 +22,12 @@ export async function uploadFileToDrive(filePath: string, folderId: string): Pro
       throw new Error(`File not found: ${filePath}`);
     }
 
-    // GoogleAuthインスタンスを直接使用
     const auth = new google.auth.GoogleAuth({
       keyFile: KEY_FILE_PATH,
       scopes: SCOPES,
     });
-    const drive = google.drive({ version: 'v3', auth: auth }); // authClientの代わりにauthインスタンスを渡す
+
+    const drive = google.drive({ version: 'v3', auth });
 
     const fileName = path.basename(filePath);
     const fileMetadata = {
@@ -40,7 +40,7 @@ export async function uploadFileToDrive(filePath: string, folderId: string): Pro
     };
 
     logger.info(`Uploading ${fileName} to Google Drive folder ${folderId}...`);
-    const response = await drive.files.create({
+    const response = await (drive as any).files.create({ // Added 'as any'
       requestBody: fileMetadata,
       media: media,
       fields: 'id', // レスポンスで取得するフィールド (ファイルID)
@@ -51,10 +51,10 @@ export async function uploadFileToDrive(filePath: string, folderId: string): Pro
   } catch (error) {
     logger.error(`Failed to upload file to Google Drive: ${error}`);
     if (error instanceof Error) {
-        logger.error(`Error details: ${error.message}`);
-        if ((error as any).response?.data?.error?.message) {
-            logger.error(`Google API Error: ${(error as any).response.data.error.message}`);
-        }
+      logger.error(`Error details: ${error.message}`);
+      if ((error as any).response?.data?.error?.message) {
+        logger.error(`Google API Error: ${error.response.data.error.message}`);
+      }
     }
     throw error;
   }
