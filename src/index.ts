@@ -6,12 +6,12 @@ import Papa from 'papaparse'; // Import papaparse
 import { Scraper } from './services/scraper';
 import { scrapeJobDetails } from './services/detailScraper';
 import { saveDataAsJson, saveDataAsCsv } from './utils/dataSaver';
-import { uploadFileToDrive } from './utils/googleCloudUploader';
+import { uploadFileToDrive } from './utils/googleDriveUploader';
 import { JobItem } from './types/types';
 import { config } from './config';
 import logger from './utils/logger';
 
-const googleCloudStorageBucketName = config.googleCloudStorage.bucketName;
+const googleDriveFolderId = config.googleDrive.folderId;
 
 // Helper function to parse CSV data
 function parseCsvData(csvData: string): JobItem[] {
@@ -302,21 +302,21 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
         const savedPathCsv = saveDataAsCsv(finalDataToSave, outputSuffix); // Pass suffix to saver
         logger.info(`Saved scraped data to: ${savedPathCsv}`);
 
-        // --- Google Cloud Storageへのアップロード処理 ---
+        // --- Google Driveへのアップロード処理 ---
         if (savedPathCsv) {
           try {
-            logger.info(`Attempting to upload ${savedPathCsv} to Google Cloud Storage bucket ${googleCloudStorageBucketName}...`);
-            const fileUrl = await uploadFileToDrive(savedPathCsv, googleCloudStorageBucketName);
+            logger.info(`Attempting to upload ${savedPathCsv} to Google Drive folder ${googleDriveFolderId}...`);
+            const fileUrl = await uploadFileToDrive(savedPathCsv, googleDriveFolderId);
             if (fileUrl) {
-              logger.info(`Successfully uploaded to Google Cloud Storage. File URL: ${fileUrl}`);
+              logger.info(`Successfully uploaded to Google Drive. File URL: ${fileUrl}`);
             } else {
-              logger.warn('Upload to Google Cloud Storage may have failed (no file URL returned).');
+              logger.warn('Upload to Google Drive may have failed (no file URL returned).');
             }
           } catch (uploadError) {
-            logger.error(`Failed to upload ${savedPathCsv} to Google Cloud Storage: ${uploadError}`);
+            logger.error(`Failed to upload ${savedPathCsv} to Google Drive: ${uploadError}`);
           }
         }
-        // --- Google Cloud Storageへのアップロード処理 ---
+        // --- Google Driveへのアップロード処理 ---
     } else {
         logger.info('No data to save.');
     }

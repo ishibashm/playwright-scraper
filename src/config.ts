@@ -9,7 +9,7 @@ export const config = {
   chunkSize: 5, // Number of jobs to process before logging progress
   timeout: 30000, // Timeout for page navigation
   dataDir: 'data', // Directory to save scraped data
-  googleCloudStorage: {
-    bucketName: process.env.GOOGLE_CLOUD_STORAGE_BUCKET_NAME || '',
+  googleDrive: {
+    folderId: process.env.GOOGLE_DRIVE_FOLDER_ID || '',
   },
 } as const;

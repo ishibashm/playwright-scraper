@@ -52,8 +52,8 @@ export async function uploadFileToDrive(filePath: string, folderId: string): Pro
     logger.error(`Failed to upload file to Google Drive: ${error}`);
     if (error instanceof Error) {
       logger.error(`Error details: ${error.message}`);
-      if ((error as any).response?.data?.error?.message) {
-        logger.error(`Google API Error: ${error.response.data.error.message}`);
+      if ((error as any).response && typeof (error as any).response.data?.error?.message === 'string') {
+        logger.error(`Google API Error: ${(error as any).response.data.error.message}`);
       }
     }
     throw error;
