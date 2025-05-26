@@ -8,4 +8,5 @@ export const config = {
   userAgent: process.env.USER_AGENT || 'Mozilla/5.0 (compatible; ScraperBot/1.0)',
   pageDelayMs: Number(process.env.PAGE_DELAY_MS) || 2000,
   maxConcurrency: Number(process.env.MAX_CONCURRENCY) || 3,
+  chunkSize: Number(process.env.CHUNK_SIZE) || 5, // Added chunkSize
 };

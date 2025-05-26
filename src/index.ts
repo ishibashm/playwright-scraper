@@ -203,13 +203,17 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
     } // End of Mode Branching
 
     // --- Phase 2: User Confirmation and Detail Scraping ---
-    let fetchDetailsAnswer = 'n'; // Default to no if no details need processing
+    let fetchDetailsAnswer = 'n';
     if (jobsToProcessDetails.length > 0) {
+      if (skipChunkConfirm) {
+        logger.info(`Skipping initial confirmation for fetching ${jobsToProcessDetails.length} job details due to --skip-chunk-confirm flag.`);
+        fetchDetailsAnswer = 'y'; // Automatically proceed if skip flag is present
+      } else {
         fetchDetailsAnswer = await askQuestion(`Found ${jobsToProcessDetails.length} jobs requiring details. Fetch details now? (y/n): `);
+      }
     } else if (!isResumeMode) {
         logger.info('No job summaries collected in Phase 1.');
     }
-
 
     if (fetchDetailsAnswer.toLowerCase() === 'y' && jobsToProcessDetails.length > 0) {
       logger.info('--- Starting Phase 2: Scraping Job Details ---');
