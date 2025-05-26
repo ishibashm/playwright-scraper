@@ -17,5 +17,6 @@ export interface JobItem {
   clientReviewCount?: number;
   clientIdentityVerified?: boolean;
   clientRuleCheckSucceeded?: boolean;
+  additionalData?: string; // Added for getByRole('cell', { name: '-' })
   error?: string; // Optional error property added
 }

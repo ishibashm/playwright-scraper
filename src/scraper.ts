@@ -18,7 +18,8 @@ export async function scrapeJobs(page: Page, url: string, nextPage = false): Pro
         period: getText('span[data-period]'),
         client: getText('div.rGkuO'),
         applicants: 0, // 応募人数のclassは要調査
-        link: getLink()
+        link: getLink(),
+        additionalData: Array.from(el.querySelectorAll('tr')).find(row => row.querySelector('th')?.textContent?.trim() === '納品希望日')?.querySelector('td')?.textContent?.trim() || ''
       };
     });
   });
@@ -43,7 +44,8 @@ export async function scrapeJobs(page: Page, url: string, nextPage = false): Pro
             period: getText('span[data-period]'),
             client: getText('div.rGkuO'),
             applicants: 0,
-            link: getLink()
+            link: getLink(),
+            additionalData: Array.from(el.querySelectorAll('tr')).find(row => row.querySelector('th')?.textContent?.trim() === '納品希望日')?.querySelector('td')?.textContent?.trim() || ''
           };
         });
       });
