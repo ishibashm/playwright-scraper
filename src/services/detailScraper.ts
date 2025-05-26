@@ -51,6 +51,9 @@ export async function scrapeJobDetails(page: Page): Promise<Partial<JobItem>> {
     // 5. 応募期限
     details.applicationDeadline = (await getTextContent(page, 'table.summary th:has-text("応募期限") + td'))?.trim() || undefined;
 
+    // additionalDataとして納品希望日を取得
+    details.additionalData = (await getTextContent(page, 'table.summary th:has-text("納品希望日") + td'))?.trim() || undefined;
+
     // 6. クライアント名
     details.clientName = (await getTextContent(page, 'section.client_detail_information a[href^="/public/employers/"]'))?.trim() || undefined;
 
