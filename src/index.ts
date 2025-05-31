@@ -5,7 +5,7 @@ import * as path from 'path';
 import Papa from 'papaparse'; // Import papaparse
 import { Scraper } from './services/scraper';
 import { scrapeJobDetails } from './services/detailScraper';
-import { saveDataAsJson, saveDataAsCsv } from './utils/dataSaver';
+import { saveDataAsJson, saveDataAsCsv, saveDataToSupabase } from './utils/dataSaver';
 import { JobItem } from './types/types';
 import { config } from './config';
 import logger from './utils/logger';
@@ -288,6 +288,16 @@ console.log('Raw arguments:', process.argv); // Log raw arguments for debugging
         logger.info(`Saved scraped data to: ${savedPathJson}`);
         const savedPathCsv = saveDataAsCsv(finalDataToSave, outputSuffix); // Pass suffix to saver
         logger.info(`Saved scraped data to: ${savedPathCsv}`);
+
+        // Save to Supabase
+        logger.info('Attempting to save data to Supabase...');
+        const supabaseSaveResult = await saveDataToSupabase(finalDataToSave);
+        if (supabaseSaveResult.success) {
+          logger.info('Data successfully saved to Supabase.');
+        } else {
+          logger.error(`Failed to save data to Supabase: ${supabaseSaveResult.error}`);
+        }
+
     } else {
         logger.info('No data to save.');
     }

@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 // config のインポートパスを修正 (相対パスを一段上に)
-import { config } from '../config';
+import { config } from '../config/config';
 import { formatDate } from './dateFormatter';
 import logger from './logger';
+import { supabase } from '../services/supabase';
+import { JobItem } from '../types/types';
 
 // suffix 引数を追加 (デフォルトは空文字)
 export function saveDataAsJson(data: any, suffix: string = '') {
@@ -55,5 +57,23 @@ export function saveDataAsCsv(data: any[], suffix: string = '') {
   } catch (e) {
     logger.error(`Failed to save CSV data: ${e}`);
     throw e;
+  }
+}
+
+export async function saveDataToSupabase(data: JobItem[]) {
+  try {
+    const { error } = await supabase
+      .from('jobs')
+      .insert(data);
+
+    if (error) {
+      logger.error(`Failed to save data to Supabase: ${error.message}`);
+      return { success: false, error: error.message };
+    }
+    logger.info(`Successfully saved ${data.length} items to Supabase.`);
+    return { success: true };
+  } catch (e) {
+    logger.error(`An unexpected error occurred while saving to Supabase: ${e}`);
+    return { success: false, error: (e as Error).message };
   }
 }

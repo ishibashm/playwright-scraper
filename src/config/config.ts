@@ -9,4 +9,6 @@ export const config = {
   pageDelayMs: Number(process.env.PAGE_DELAY_MS) || 2000,
   maxConcurrency: Number(process.env.MAX_CONCURRENCY) || 3,
   chunkSize: Number(process.env.CHUNK_SIZE) || 5, // Added chunkSize
+  supabaseUrl: process.env.SUPABASE_URL || 'https://jrjbuofsphtuvhkazxub.supabase.co',
+  supabaseAnonKey: process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyamJ1b2ZzcGh0dXZoa2F6eHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2ODA3MzcsImV4cCI6MjA2NDI1NjczN30.OgRRFzuAmWjfNDtxG3u-5GybyrqWRaKlfRrkZYv4_r8',
 };
